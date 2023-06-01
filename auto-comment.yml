@@ -1,0 +1,63 @@
+name: Auto Comment
+
+on:
+  issues:
+    types: [opened, closed, assigned, unassigned]
+  pull_request:
+    types: [opened]
+
+jobs:
+  auto-comment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install wow-actions/auto-comment
+        uses: wow-actions/auto-comment@v1
+
+      - name: Auto Comment on Issue Opened
+        if: github.event_name == 'issues' && github.event.action == 'opened'
+        uses: wow-actions/auto-comment@v1
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          comment: |
+            Hello @{​​​​​​​​{​​​​​​​​github.event.issue.user.login}​​​​​​​​}​​​​​​​​!
+            Thank you for opening this issue. Could you please provide more context or steps to reproduce the problem? We'll be happy to assist you further.
+
+      - name: Auto Comment on Pull Request Opened
+        if: github.event_name == 'pull_request' && github.event.action == 'opened'
+        uses: wow-actions/auto-comment@v1
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment: |
+            Hi @{​​​​​​​​{​​​​​​​​github.event.pull_request.user.login}​​​​​​​​}​​​​​​​​!
+            Thank you for creating the pull request. We appreciate your contribution. Please make sure to follow our contributing guidelines while submitting the code changes.
+
+      - name: Auto Comment on Issue Closed
+        if: github.event_name == 'issues' && github.event.action == 'closed'
+        uses: wow-actions/auto-comment@v1
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          comment: |
+            @{​​​​​​​​{​​​​​​​​github.event.issue.user.login}​​​​​​​​}​​​​​​​​, thank you for your contribution! We appreciate your help in resolving this issue. If you have any more questions or encounter further problems, please don't hesitate to reach out.
+
+      - name: Auto Comment on Issue Assigned
+        if: github.event_name == 'issues' && github.event.action == 'assigned'
+        uses: wow-actions/auto-comment@v1
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          comment: |
+            Hello @{​​​​​​​​{​​​​​​​​github.event.issue.assignee.login}​​​​​​​​}​​​​​​​​!
+            You have been assigned to work on this issue. Feel free to start working on it, and let us know if you need any assistance.
+
+      - name: Auto Comment on Issue Unassigned
+        if: github.event_name == 'issues' && github.event.action == 'unassigned'
+        uses: wow-actions/auto-comment@v1
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          comment: |
+            Hi @{​​​​​​​​{​​​​​​​​github.event.issue.assignee.login}​​​​​​​​}​​​​​​​​!
+            The issue has been unassigned from you. If you are unavailable, please let us know, and we can reassign it to someone else.
+
